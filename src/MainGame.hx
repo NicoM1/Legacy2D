@@ -11,22 +11,18 @@ import lib.Game;
 import lib.SpriteBatch;
 import lib.Input;
 import flash.system.System;
+import lib.GameObjectManager;
 
 class MainGame extends Game
 {
-	private var spriteBatch : SpriteBatch;
-	
-	private var keyboard : Input;
-	
-	private var fps : FPS;
-	
+	private var spriteBatch : SpriteBatch;	
+	private var keyboard : Input;	
+	private var fps : FPS;	
 	private var cam : Camera;
 	
 	public function new(stage:Stage) 
 	{
 		super(stage.stageWidth, stage.stageHeight, 1); //Input Size And Scale Here, Note This Is Not Window Size, Mearly Buffer Size [super(640/2, 480/2, 2);]
-		
-		//addChild(new Stats());
 		
 		ArtInstance.Init(); //This Does All Your Art Loading, Load Files In Its LoadContent() Function
 		spriteBatch = new SpriteBatch(Game.drawBuffer); //Acts Similar To An XNA SpriteBatch, But Art Must Be Supplied As An Integer Identifier Name
@@ -48,7 +44,7 @@ class MainGame extends Game
 		}
 		
 		//Add Update Code Here:
-
+		GameObjectManager.Update(Game.elapsed);
 		
 		Input.ClearPressedKeys(); //Clears Keypresses and touch locations
 	}
@@ -59,6 +55,7 @@ class MainGame extends Game
 		super.Draw(true); //Clears The Buffer, Use super.Draw(false) To Leave Graphics On The Buffer
 		
 		//Add Draw Code Here:
+		GameObjectManager.Draw(spriteBatch);
 		
 		
 		spriteBatch.PushDrawCalls(); //Pushes All Draw Calls To The Buffer, MUST BE CALLED (if using crappy Draw() call)

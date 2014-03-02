@@ -61,11 +61,6 @@ class Game extends Sprite
 	public function Update()
 	{
 		UpdateElapsedTime();
-		/*trace(elapsed);
-		if (elapsed < 0)
-		{
-			trace("shit");
-		}*/
 	}
 	private function UpdateElapsedTime()
 	{
