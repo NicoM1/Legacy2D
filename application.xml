@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<!-- NMML reference: https://gist.github.com/1763850 -->
+	
+	<!-- metadata, make sure 'package' is at least 3 segments (ie. com.mycompany.myproject) -->
+	<meta title="BaseEngine" package="com.nico.game" version="1.0.0" company="" />
+	
+	<!-- output -->
+	<app main="Main" file="BaseEngine" path="bin" />
+	
+	<window background="#000000" fps="61" />
+	<window width="640" height="480" if="flash"/>
+	<window width="640" height="480" if="cpp"/>
+	<window width="0" height="0" if="android"/>
+	<!--<window fullscreen="true" if="cpp" />-->
+	<window orientation="landscape" vsync="false" antialiasing="0"/>
+	
+	<!-- classpath, haxe libs -->
+	<source path="src" />
+	<haxelib name="openfl" />
+	
+	<!-- assets -->
+	<icon path="assets/openfl.svg" />
+	<assets path="Assets" rename="assets" exclude="openfl.svg"/>
+	
+	<android minimum-sdk-version="15"/>
+	<android target-sdk-version="19"/>
+	
+	<certificate path="P:\Haxe\Release_Certificate\NicosGameKey1.keystore" password="Itnm0591" alias="nico.game_1" alias-password="Itnm0591" if="android" unless="debug" />
+	
+	<!-- optimize output
+	<haxeflag name="-dce full" /> -->
+	
+</project>
