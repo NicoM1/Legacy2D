@@ -16,18 +16,29 @@ class GameObject
 	///The key is a unique identifer, used to acces individual components
 	private var components : Map<String, Component>;
 	
-	public var Position(default, null) : Point;
-	public var DrawBounds(default, null) : Point;
-	
+	///Do note, position and drawbounds affect clipping of drawing, although they don't affect drawing on their own
 	public function new(ID : Int, ?Tag : String) 
 	{
 		this.ID = ID;
 		this.Tag = Tag;
 		
-		Position = new Point();
-		DrawBounds = new Point();
-		
 		components = new Map<String, Component>();
+		AddComponent(new TransformComponent(ID), "transform");
+	}
+	
+	public function AddComponent(component : Component, ID : String)
+	{
+		components.set(ID, component);
+	}
+	
+	public function GetComponent(ID : String) : Component
+	{
+		return components.get(ID);
+	}
+	
+	public function GetTransformComponent() : TransformComponent
+	{
+		return cast(components.get("transform"), TransformComponent);
 	}
 	
 	public function Update(elapsed : Float)

@@ -55,8 +55,7 @@ class MainGame extends Game
 		super.Draw(true); //Clears The Buffer, Use super.Draw(false) To Leave Graphics On The Buffer
 		
 		//Add Draw Code Here:
-		GameObjectManager.Draw(spriteBatch);
-		
+		GameObjectManager.Draw(spriteBatch);	
 		
 		spriteBatch.PushDrawCalls(); //Pushes All Draw Calls To The Buffer, MUST BE CALLED (if using crappy Draw() call)
 	}

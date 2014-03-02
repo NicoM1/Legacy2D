@@ -22,11 +22,13 @@ class GameObjectManager
 		gameObjects.remove(ID);
 	}
 	
+	///Returns the gameobject with the specified ID
 	static public function GetGameObject(ID : Int) : GameObject
 	{
 		return gameObjects.get(ID);
 	}
 	
+	///Returns all gameobjects with a specific tag
 	static public function GetGameObjectsWithTag(tag : String) : Array<GameObject>
 	{
 		var gObjects = new Array<GameObject>();
@@ -40,6 +42,20 @@ class GameObjectManager
 		}
 		
 		return gObjects;
+	}
+	
+	///Returns the first gameobject found with a specific tag
+	static public function GetGameObjectByTag(tag : String) : GameObject
+	{		
+		for (g in gameObjects)
+		{
+			if (g.Tag == tag)
+			{
+				return g;
+			}
+		}
+		
+		return null;
 	}
 	
 	static public function Update(elapsed : Float)
@@ -56,13 +72,7 @@ class GameObjectManager
 		{
 			if (g.Drawable)
 			{
-				if (g.Position.x + g.DrawBounds.x >= 0 && g.Position.x < Game.localwidth)
-				{
-					if (g.Position.y + g.DrawBounds.y >= 0 && g.Position.y < Game.localheight)
-					{
-						g.Draw(spritebatch);
-					}
-				}
+				g.Draw(spritebatch);
 			}
 		}
 	}
