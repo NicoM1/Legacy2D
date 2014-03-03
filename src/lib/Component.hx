@@ -15,9 +15,14 @@ class Component
 		return GameObjectManager.GetGameObject(Owner);
 	}
 	
-	public function GetComponentOnOwner(ID : String) : Component
+	public function GetComponentOnOwnerByID<T:Component>(ID : String, type:Class<T>):T
 	{
-		return GetOwner().GetComponent(ID);
+		return GetOwner().GetComponentByID(ID,type);
+	}
+	
+	public function GetComponentOnOwner<T:Component>(type:Class<T>):T
+	{
+		return GetOwner().GetComponent(type);
 	}
 	
 	public function Update(elapsed : Float)

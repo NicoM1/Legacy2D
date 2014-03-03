@@ -5,6 +5,7 @@ import flash.display.Stage;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import lib.Camera;
+import lib.GameObject;
 import openfl.Assets;
 import openfl.display.FPS;
 import lib.Game;

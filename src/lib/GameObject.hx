@@ -23,23 +23,52 @@ class GameObject
 		this.Tag = Tag;
 		
 		components = new Map<String, Component>();
-		AddComponent(new TransformComponent(ID), "transform");
+		AddComponent(new TransformComponent(ID));
 	}
 	
-	public function AddComponent(component : Component, ID : String)
+	public function GetComponentByID<T:Component>(ID : String, type : Class<T>) : T
+	{
+		var c = components.get(ID);
+		if (c != null)
+		{
+			if (Std.is(c, type))
+			{
+				return cast c;
+			}
+		}
+		return null;
+	}
+	
+	public function GetComponent<T:Component>(type:Class<T>):T
+	{
+		var name = Type.getClassName(type);
+		return cast components.get(name);
+	}
+	
+	public function AddComponent<T:Component>(component:T)
+	{
+		var type = Type.getClass(component);
+		var name = Type.getClassName(type);
+		components.set(name, component);
+	}
+	
+	///Adds a component at a specified ID, note: can be overwritted by a call to AddComponent if the ID is also the type
+	public function AddComponentWithID(component : Component, ID : String)
 	{
 		components.set(ID, component);
 	}
 	
+	/*
 	public function GetComponent(ID : String) : Component
 	{
 		return components.get(ID);
-	}
+	}*/
 	
+	/*
 	public function GetTransformComponent() : TransformComponent
 	{
-		return cast(components.get("transform"), TransformComponent);
-	}
+		return cast(components.get("transform"), TransformComponent); 
+	}*/
 	
 	public function Update(elapsed : Float)
 	{
