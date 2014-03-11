@@ -35,7 +35,7 @@ class Game extends Sprite
 		Game.localwidth = width;
 		Game.localheight = height;			
 		
-		buffer = new BitmapData(Math.floor(localwidth), Math.floor(localheight), bgcolor);
+		buffer = new BitmapData(Math.floor(localwidth), Math.floor(localheight), true, bgcolor);
 		drawBuffer = new Bitmap(buffer);
 		drawBuffer.scaleX = drawBuffer.scaleY = scale;
 		addChild(drawBuffer);
