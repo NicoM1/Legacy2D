@@ -1,15 +1,19 @@
-package lib;
+package lib.gameobjects;
+import lib.collision.CollisionManager;
 
 class GameObjectManager
 {
 	///Int corresponds to ID of gameobject, for faster access
 	static private var gameObjects : Map<Int, GameObject>;
 	
+	static private var collision : CollisionManager;
+	
 	private function new(){} 
 
 	static function __init__()
 	{
 		gameObjects = new Map<Int, GameObject>();
+		collision = new CollisionManager();
 	}
 	
 	static public function AddGameObject(gameObject : GameObject)
@@ -58,12 +62,26 @@ class GameObjectManager
 		return null;
 	}
 	
+	static public function CheckCollision(object : CollisionComponent) : Array<CollisionComponent>
+	{
+		return collision.CheckCollision(object);
+	}
+	
 	static public function Update(elapsed : Float)
 	{
 		for (g in gameObjects)
 		{
 			g.Update(elapsed);
 		}
+		
+		var gObjects = new Array<GameObject>();
+		
+		for (g in gameObjects)
+		{
+			gObjects.push(g);
+		}
+		
+		collision.Update(elapsed, gObjects);
 	}
 	
 	static public function Draw(spritebatch : SpriteBatch)

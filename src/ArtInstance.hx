@@ -8,9 +8,9 @@ import lib.Art;
 
 class ArtInstance
 {
+	static public var _PIXEL = 0;
 	/*static public var _FISH = 0;
 	static public var _BUBBLE = 1;
-	static public var _PIXEL = 2;
 	static public var _SWORD_SOULSTEALER = 3;
 	[Sample Identifiers]*/
 	
@@ -25,7 +25,7 @@ class ArtInstance
 	static private function LoadContent()
 	{
 		///Use Art.AddImage() or Art.AddBitmap() To Add Content
-		
+		Art.AddBitmap(new Bitmap(new BitmapData(1, 1, true, 0xFFFFFFFF)), _PIXEL);
 	}
 	
 	static public function GetArt(imageID : Int) : Bitmap

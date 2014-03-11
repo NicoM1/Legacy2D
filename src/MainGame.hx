@@ -5,14 +5,14 @@ import flash.display.Stage;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import lib.Camera;
-import lib.GameObject;
+import lib.gameobjects.GameObject;
 import openfl.Assets;
 import openfl.display.FPS;
 import lib.Game;
 import lib.SpriteBatch;
 import lib.Input;
 import flash.system.System;
-import lib.GameObjectManager;
+import lib.gameobjects.GameObjectManager;
 
 class MainGame extends Game
 {

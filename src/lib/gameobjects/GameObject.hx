@@ -1,4 +1,4 @@
-package lib;
+package lib.gameobjects;
 
 import flash.geom.Point;
 
@@ -16,14 +16,21 @@ class GameObject
 	///The key is a unique identifer, used to acces individual components
 	private var components : Map<String, Component>;
 	
-	///Do note, position and drawbounds affect clipping of drawing, although they don't affect drawing on their own
+	///ID Can't Be 0, 0 will switch to -1
 	public function new(ID : Int, ?Tag : String) 
 	{
-		this.ID = ID;
+		if (ID != 0)
+		{
+			this.ID = ID;
+		}
+		else
+		{
+			this.ID = -1;
+		}
 		this.Tag = Tag;
 		
 		components = new Map<String, Component>();
-		AddComponent(new TransformComponent(ID));
+		AddComponent(new TransformComponent(ID, 10, 10));
 	}
 	
 	public function GetComponentByID<T:Component>(ID : String, type : Class<T>) : T
