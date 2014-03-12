@@ -3,10 +3,10 @@
 	<!-- NMML reference: https://gist.github.com/1763850 -->
 	
 	<!-- metadata, make sure 'package' is at least 3 segments (ie. com.mycompany.myproject) -->
-	<meta title="BaseEngine" package="com.nico.game" version="1.0.0" company="" />
+	<meta title="Legacy2D" package="com.legacy.game" version="1.0.0" company="" />
 	
 	<!-- output -->
-	<app main="Main" file="BaseEngine" path="bin" />
+	<app main="Main" file="Legacy2D" path="bin" />
 	
 	<window background="#000000" fps="61" />
 	<window width="640" height="480" if="flash"/>
