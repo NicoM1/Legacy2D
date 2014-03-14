@@ -8,7 +8,7 @@ import flash.geom.Rectangle;
  */
 class CollisionComponent extends Component
 {
-	var bounds : Rectangle;
+	public var bounds : Rectangle;
 	var oldBounds : Rectangle;
 	
 	public function new(Owner : Int, Bounds : Rectangle) 
@@ -27,6 +27,12 @@ class CollisionComponent extends Component
 	public function GetBounds() : Rectangle
 	{
 		return bounds;
+	}
+	
+	public function Move(offset : Point)
+	{
+		bounds.x += offset.x;
+		bounds.y += offset.y;
 	}
 	
 	public function Collides() : Array<CollisionComponent>

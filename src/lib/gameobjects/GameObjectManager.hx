@@ -6,7 +6,7 @@ class GameObjectManager
 	///Int corresponds to ID of gameobject, for faster access
 	static private var gameObjects : Map<Int, GameObject>;
 	
-	static private var collision : CollisionManager;
+	static public var collision : CollisionManager; //change back to private soon
 	
 	private function new(){} 
 

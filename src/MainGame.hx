@@ -2,9 +2,11 @@ package ;
 
 import flash.display.Bitmap;
 import flash.display.Stage;
+import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import lib.Camera;
+import lib.gameobjects.CollisionComponent;
 import lib.gameobjects.GameObject;
 import openfl.Assets;
 import openfl.display.FPS;
@@ -20,6 +22,10 @@ class MainGame extends Game
 	private var keyboard : Input;	
 	private var fps : FPS;	
 	private var cam : Camera;
+	var a : CollisionComponent;
+    var b : CollisionComponent;
+	var d : CollisionComponent;
+	var c : Rectangle;
 	
 	public function new(stage:Stage) 
 	{
@@ -32,12 +38,17 @@ class MainGame extends Game
 		addChild(fps);
 		cam = new Camera();	
 		
+		a = new CollisionComponent(0, new Rectangle(40, 32, 100, 100));
+		b = new CollisionComponent(0, new Rectangle(150, 150, 100, 100));
+		c = new Rectangle(0,0,100,100);	
 	}
 
 	///Handle Any Game State Updates Here
 	override public function Update() 
 	{
 		super.Update(); //Must Be Called To Update Elapsed Time, Get Elapsed Time With: Game.elapsed
+		
+		var mouse = Input.GetMouseState();
 		
 		if (Input.IsKeyDown("escape"))
 		{
@@ -46,6 +57,14 @@ class MainGame extends Game
 		
 		//Add Update Code Here:
 		GameObjectManager.Update(Game.elapsed);
+		a.SetBounds(new Rectangle(mouse.position.x, mouse.position.y, 100, 100));
+		c.x = mouse.position.x;
+		c.y = mouse.position.y;
+		
+		if (a.GetBounds().intersects(b.GetBounds()))
+		{
+			GameObjectManager.collision.ResolveCollision(a, b);
+		}
 		
 		Input.ClearPressedKeys(); //Clears Keypresses and touch locations
 	}
@@ -57,6 +76,10 @@ class MainGame extends Game
 		
 		//Add Draw Code Here:
 		GameObjectManager.Draw(spriteBatch);	
+		
+		spriteBatch.DrawToScreen(ArtInstance.GetArt(ArtInstance._PIXEL), a.GetBounds(), null, new ColorTransform(1,0,0));
+		spriteBatch.DrawToScreen(ArtInstance.GetArt(ArtInstance._PIXEL), b.GetBounds(), null, new ColorTransform(0, 0, 0));
+		spriteBatch.DrawToScreen(ArtInstance.GetArt(ArtInstance._PIXEL), c, null, new ColorTransform(0,1,0,0.5));
 		
 		spriteBatch.PushDrawCalls(); //Pushes All Draw Calls To The Buffer, MUST BE CALLED (if using crappy Draw() call)
 	}

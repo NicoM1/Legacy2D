@@ -13,7 +13,7 @@ class Main extends Sprite
 		
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		//stage.quality = StageQuality.LOW;
-		Mouse.hide();
+		//Mouse.hide();
 		var game1 = new MainGame(stage);
 		addChild(game1);
 	}

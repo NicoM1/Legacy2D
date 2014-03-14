@@ -60,7 +60,7 @@ class SpriteBatch
 		depthBuffer = new Array<Float>();
 	}
 	
-	public function PushCall(index : Int, imageID : Int, destinationRect : Rectangle, ?sourceRect : Rectangle, ?depth : Float, ?colorTransform : ColorTransform, ?horizontalFlip = false, ?verticalFlip = false )
+	private function PushCall(index : Int, imageID : Int, destinationRect : Rectangle, ?sourceRect : Rectangle, ?depth : Float, ?colorTransform : ColorTransform, ?horizontalFlip = false, ?verticalFlip = false )
 	{
 		IDBuffer.insert(index, imageID);
 		dXBuffer.insert(index, destinationRect.x);
