@@ -26,8 +26,6 @@
 	<android minimum-sdk-version="15"/>
 	<android target-sdk-version="19"/>
 	
-	<certificate path="P:\Haxe\Release_Certificate\NicosGameKey1.keystore" password="Itnm0591" alias="nico.game_1" alias-password="Itnm0591" if="android" unless="debug" />
-	
 	<!-- optimize output
 	<haxeflag name="-dce full" /> -->
 	
