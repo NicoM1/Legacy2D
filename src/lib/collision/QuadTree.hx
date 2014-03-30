@@ -49,6 +49,23 @@ class QuadTree
 		nodes[3] = new QuadTree(level + 1, new Rectangle(x + subWidth, y + subHeight, subWidth, subHeight));	
 	}
 	
+	///Updates an individual object in the quadtree
+	public function UpdateObject(object : CollisionComponent)
+	{
+		for (o in objects)
+		{
+			if (o.Owner == object.Owner)
+			{
+				o = object;
+				return;
+			}
+		}
+		for (n in nodes)
+		{
+			n.UpdateObject(object);
+		}
+	}
+	
 	private function GetIndex(Rect : CollisionComponent) : Int
 	{
 		var index = -1;
@@ -93,9 +110,8 @@ class QuadTree
 			if (index != -1)
 			{
 				nodes[index].Insert(Rect);
+				return;
 			}
-			
-			return;
 		}
 		
 		objects.push(Rect);

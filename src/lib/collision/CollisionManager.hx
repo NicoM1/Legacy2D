@@ -12,12 +12,12 @@ class CollisionManager
 {
 	private var quadTree : QuadTree;
 	
-	public function new() 
+	public function new(worldBounds : Point) 
 	{
-		quadTree = new QuadTree(0, new Rectangle(0, 0, 100, 100));//STUBBED
+		quadTree = new QuadTree(0, new Rectangle(0, 0, worldBounds.x, worldBounds.y));
 	}
 	
-	public function Update(elapsed : Float, gameObjects : Array<GameObject>)
+	public function Update(gameObjects : Array<GameObject>)
 	{
 		quadTree.Clear();
 		for (g in gameObjects)
@@ -30,6 +30,11 @@ class CollisionManager
 		}
 	}
 	
+	public function UpdateObject(object : CollisionComponent)
+	{
+		quadTree.UpdateObject(object);
+	}
+	
 	///Returns an array of the IDs of all objects that have collided
 	public function CheckCollision(collision : CollisionComponent) : Array<CollisionComponent>
 	{
@@ -40,9 +45,12 @@ class CollisionManager
 		{
 			if (p.Owner != collision.Owner)
 			{
-				if (p.GetBounds().intersects(collision.GetBounds()))
+				if (p.collideAble)
 				{
-					collsionIDs.push(p);
+					if (p.GetBounds().intersects(collision.GetBounds()))
+					{
+						collsionIDs.push(p);
+					}
 				}
 			}
 		}
@@ -50,6 +58,7 @@ class CollisionManager
 		return collsionIDs;
 	}
 	
+	/*
 	public function ResolveCollision(a : CollisionComponent, b : CollisionComponent)
 	{
 		var aAABB = new AABB(new Point(a.GetBounds().x, a.GetBounds().y), 
@@ -92,7 +101,7 @@ class CollisionManager
 		{
 			a.Move(new Point(0, sign(direction.y) * overlap.y));
 		}
-	}
+	}*/
 	
 	private function sign(i : Float) : Int
 	{

@@ -27,6 +27,7 @@ class Input extends Sprite
 		touchPositions = new Map();
 		mouseState = new MouseState();
 		
+		#if !html5
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		
@@ -38,6 +39,7 @@ class Input extends Sprite
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseMove);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseMove);
 		stage.addEventListener(MouseEvent.CLICK, onMouseClick);
+		#end
 		
 		#if flash
 		//addEventListener(Event.EXIT_FRAME, frameExit);

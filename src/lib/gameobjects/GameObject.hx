@@ -13,11 +13,19 @@ class GameObject
 	///A general identifier, for grouping objects, Ex: "Enemy"
 	public var Tag : String;
 	
+	public var Parent(default, null) : Int;
+	
+	public var Position(default, null) : Point;
+	private var WorldPosition(default, null) : Point;
+	public var Bounds : Point;
+	
 	///The key is a unique identifer, used to acces individual components
 	private var components : Map<String, Component>;
 	
+	private var children : Array<Int>;
+	
 	///ID Can't Be 0, 0 will switch to -1
-	public function new(ID : Int, ?Tag : String) 
+	public function new(ID : Int, ?Tag : String, ?Position : Point, ?Bounds : Point, ?Parent : Int = -1) 
 	{
 		if (ID != 0)
 		{
@@ -29,8 +37,114 @@ class GameObject
 		}
 		this.Tag = Tag;
 		
+		this.Parent = Parent;
+		
 		components = new Map<String, Component>();
-		AddComponent(new TransformComponent(ID, 10, 10));
+		children = new Array<Int>();
+		
+		if (Position == null)
+		{
+			this.Position = new Point(0,0);
+		}
+		else
+		{
+			this.Position = Position;
+		}
+		WorldPosition = new Point();
+		if (Bounds == null)
+		{
+			this.Bounds = new Point();
+		}
+		else
+		{
+			this.Bounds = Bounds;
+		}
+	}
+	
+	///Gets pos, taking into account if object is a child
+	public function GetPosition() : Point
+	{
+		if (Parent == -1)
+		{
+			return Position;
+		}
+		else
+		{
+			return WorldPosition;
+		}
+	}
+	
+	public function SetPosition(pos : Point)
+	{
+		Position = pos;
+		var col = GetComponent(CollisionComponent);
+		if (col != null)
+		{
+			GameObjectManager.UpdateObject(col);
+		}
+	}
+	
+	public function Move(offset : Point)
+	{
+		Position.x += offset.x;
+		Position.y += offset.y;
+		var col = GetComponent(CollisionComponent);
+		if (col != null)
+		{
+			GameObjectManager.UpdateObject(col);
+		}
+	}
+	
+	public function AddChild(childID : Int)
+	{
+		for (c in children)
+		{
+			if (c == childID)
+			{
+				return;
+			}
+		}
+		children.push(childID);
+	}
+	
+	public function GetChildren() : Array<GameObject>
+	{
+		var childG : Array<GameObject> = new Array<GameObject>();
+		for (c in children)
+		{
+			childG.push(GameObjectManager.GetGameObject(c));
+		}
+		return childG;
+	}
+	
+	public function GetChildrenWithTag(tag : String) : Array<GameObject>
+	{
+		var childG : Array<GameObject> = new Array<GameObject>();
+		var child : GameObject;
+		for (c in children)
+		{
+			child = GameObjectManager.GetGameObject(c);
+			if (child.Tag == tag)
+			{
+				childG.push(child);
+			}
+		}
+		return childG;
+	}	
+		
+	public function GetChildWithTag(tag : String) : GameObject
+	{
+		var child : GameObject;
+		for (c in children)
+		{
+			child = GameObjectManager.GetGameObject(c);
+			if (child.Tag == tag)
+			{
+				return child;
+			}
+		}
+		
+		return null;
 	}
 	
 	public function GetComponentByID<T:Component>(ID : String, type : Class<T>) : T
@@ -65,20 +179,18 @@ class GameObject
 		components.set(ID, component);
 	}
 	
-	/*
-	public function GetComponent(ID : String) : Component
+	public function GetParent() : GameObject
 	{
-		return components.get(ID);
-	}*/
-	
-	/*
-	public function GetTransformComponent() : TransformComponent
-	{
-		return cast(components.get("transform"), TransformComponent); 
-	}*/
+		return GameObjectManager.GetGameObject(Parent);
+	}
 	
 	public function Update(elapsed : Float)
 	{
+		if (Parent != -1)
+		{
+			WorldPosition.x = GetParent().GetPosition().x + Position.x;
+			WorldPosition.y = GetParent().GetPosition().y + Position.y;
+		}
 		for (c in components)
 		{
 			c.Update(elapsed);

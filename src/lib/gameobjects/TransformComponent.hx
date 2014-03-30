@@ -45,7 +45,6 @@ class TransformComponent extends Component
 			cols = col.CollidesWithOffset(new Point(Velocity.x * elapsed, Velocity.y * elapsed));
 			if (cols.length > 0)
 			{
-
 				Velocity.x = 0;		
 			}
 		}

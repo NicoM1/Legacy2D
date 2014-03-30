@@ -1,4 +1,5 @@
 package lib.gameobjects;
+import flash.geom.Point;
 import lib.collision.CollisionManager;
 
 class GameObjectManager
@@ -10,10 +11,10 @@ class GameObjectManager
 	
 	private function new(){} 
 
-	static function __init__()
+	static public function init(worldBounds : Point)
 	{
 		gameObjects = new Map<Int, GameObject>();
-		collision = new CollisionManager();
+		collision = new CollisionManager(worldBounds);
 	}
 	
 	static public function AddGameObject(gameObject : GameObject)
@@ -67,6 +68,11 @@ class GameObjectManager
 		return collision.CheckCollision(object);
 	}
 	
+	static public function UpdateObject(object : CollisionComponent)
+	{
+		collision.UpdateObject(object);
+	}
+	
 	static public function Update(elapsed : Float)
 	{
 		for (g in gameObjects)
@@ -81,7 +87,7 @@ class GameObjectManager
 			gObjects.push(g);
 		}
 		
-		collision.Update(elapsed, gObjects);
+		collision.Update(gObjects);
 	}
 	
 	static public function Draw(spritebatch : SpriteBatch)
