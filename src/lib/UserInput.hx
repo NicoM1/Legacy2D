@@ -9,7 +9,7 @@ import flash.display.Stage;
 import flash.events.TouchEvent;
 import flash.events.MouseEvent;
 
-class Input extends Sprite
+class UserInput extends Sprite
 {
 	static private var keysDown : Array<String>;
 	static private var keysPressed : Array<String>;

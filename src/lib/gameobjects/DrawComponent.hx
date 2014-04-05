@@ -8,20 +8,18 @@ import flash.geom.Rectangle;
  */
 class DrawComponent extends Component
 {
-
-	public function new(Owner : Int) 
+	var Image : Int;
+	
+	public function new(Owner : Int, ?Image : Int) 
 	{
 		super(Owner);
 		Drawable = true;
+		this.Image = (Image == null)? ArtInstance._PIXEL : Image;
 	}
 	
 	override public function Draw(spritebatch:SpriteBatch) 
 	{
-		if (GetOwner().GetPosition() == null)
-		{
-			throw "OH SHIT";
-		}
-		spritebatch.DrawToScreen(ArtInstance.GetArt(ArtInstance._PIXEL), new Rectangle(GetOwner().GetPosition().x, GetOwner().GetPosition().y, GetOwner().Bounds.x, GetOwner().Bounds.y), null, new ColorTransform(0, 0, 0));
+		spritebatch.DrawToScreen(ArtInstance.GetArt(Image), new Rectangle(GetOwner().GetPosition().x, GetOwner().GetPosition().y, GetOwner().Bounds.x, GetOwner().Bounds.y), null);
 	}
 	
 }

@@ -1,7 +1,9 @@
 package lib.gameobjects;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.Lib;
 import lib.collision.AABB;
+import lib.ExtraMath;
 
 /**
  * ...
@@ -15,12 +17,25 @@ class CollisionComponent extends Component
 	///used to temporarily allow object to not collide
 	public var collideAble : Bool = true;
 	
+	public var immobile : Bool = false;
+	
+	public var separatePriority(default, null) : Float = 0;
+	
+	private var maxAttempts : Int = 5;
+	
+	private var hasMovement : Bool = false;
+	private var checkedMovement : Bool = false;
+	
 	///autoResolve makes component handle its own collisions
-	public function new(Owner : Int, ?autoResolve : Bool = true) 
+	public function new(Owner : Int, ?immobile : Bool = false, ?autoResolve : Bool = false, ?serparatePriority : Float = 0) 
 	{
 		super(Owner);
 		
 		this.autoResolve = autoResolve;
+		
+		this.immobile = immobile;
+		
+		this.separatePriority = serparatePriority;
 	}
 
 	public function GetBounds() : Rectangle
@@ -38,18 +53,32 @@ class CollisionComponent extends Component
 	{
 		super.Update(elapsed);
 		
+		if (!checkedMovement)
+		{
+			if (GetComponentOnOwner(MovementComponent) != null)
+			{
+				hasMovement = true;
+			}
+			checkedMovement = true;
+		}
+		
 		if (autoResolve)
 		{
-			for (c in Collides())
-			{
-				Resolve(c);
-			}
+			var attempts : Int = 0;
+			do{
+				for (c in Collides())
+				{
+					Move(Resolve(c));
+				}
+				attempts++;
+			}while ((Collides().length > 0) && attempts < maxAttempts);
 		}
 	}
 	
-	public function Resolve(b : CollisionComponent)
+	///returns the movement needed to push this object out of another object
+	public function Resolve(b : CollisionComponent) : Point
 	{
-		if (collideAble)
+		if (collideAble && !immobile && separatePriority >= b.separatePriority)
 		{
 			var owner = GetOwner();
 			
@@ -88,31 +117,22 @@ class CollisionComponent extends Component
 			
 			if (moveAxis == 0)
 			{
-				Move(new Point(sign(direction.x) * overlap.x, 0));
+				if (hasMovement)
+				{
+					GetComponentOnOwner(MovementComponent).StopVelocity("x");
+				}
+				return new Point(ExtraMath.Sign(direction.x) * overlap.x, 0);
 			}
 			else if (moveAxis == 1)
 			{
-				Move(new Point(0, sign(direction.y) * overlap.y));
+				if (hasMovement)
+				{
+					GetComponentOnOwner(MovementComponent).StopVelocity("y");
+				}
+				return new Point(0, ExtraMath.Sign(direction.y) * overlap.y);
 			}
-			
-			GameObjectManager.UpdateObject(this); //UNTESTED
 		}
-	}
-	
-	private function sign(i : Float) : Int
-	{
-		if (i < 0)
-		{	
-			return -1;
-		}
-		else if ( i > 0)
-		{
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
+		return new Point(0, 0);
 	}
 	
 	public function Collides() : Array<CollisionComponent>

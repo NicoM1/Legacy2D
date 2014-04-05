@@ -34,7 +34,7 @@ class Game extends Sprite
 	
 	static function get_elapsed()
 	{
-		return (Game.fixedUpdate)? 1 : _elapsed;
+		return (Game.fixedUpdate)? frameRate : _elapsed;
 	}
 		
 	public function new (width:Float, height:Float, scale:Float, worldBounds : Point, ?fixedUpdate : Bool = false, ?updateFrameRate = 60, ?ambientLight:Int = 0xFFFFFFFF) 

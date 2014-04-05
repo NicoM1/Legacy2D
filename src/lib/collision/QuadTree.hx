@@ -8,18 +8,20 @@ using ArrayTools;
 
 class QuadTree
 {
-	private var maxObjects = 10;
-	private var maxLevels = 5;
+	private var maxObjects = 50;
+	private var maxLevels = 10;
 	
 	private var level = 0;
 	private var objects : Array<CollisionComponent>;
 	private var bounds : Rectangle;
 	private var nodes : Array<QuadTree>; //COUNTER-CLOCKWISE
 	
-	public function new(level : Int, bounds : Rectangle) 
+	public function new(level : Int, bounds : Rectangle, ?maxObjects = 50, ?maxLevels = 10) 
 	{
 		this.level = level;
 		this.bounds = bounds;
+		this.maxObjects = maxObjects;
+		this.maxLevels = maxLevels;
 		
 		objects = new Array<CollisionComponent>();
 		nodes = new Array<QuadTree>();
