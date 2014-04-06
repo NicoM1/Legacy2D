@@ -7,12 +7,17 @@ import flash.events.Event;
 import flash.geom.Point;
 import flash.display.Stage;
 import flash.events.TouchEvent;
+import flash.events.MouseEvent;
 
-class Input extends Sprite
+class UserInput extends Sprite
 {
 	static private var keysDown : Array<String>;
 	static private var keysPressed : Array<String>;
+	
 	static private var touchPositions : Map<Int, Point>;
+	
+	static private var mouseState : MouseState;
+	static private var mouseClicked : Bool;
 	
 	public function new(stage:Stage) 
 	{
@@ -20,11 +25,20 @@ class Input extends Sprite
 		keysDown = new Array();
 		keysPressed = new Array();
 		touchPositions = new Map();
+		mouseState = new MouseState();
+
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+		
 		stage.addEventListener(TouchEvent.TOUCH_BEGIN, onTouch);
 		stage.addEventListener(TouchEvent.TOUCH_MOVE, onTouch);
 		stage.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
+		
+		stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseMove);
+		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseMove);
+		stage.addEventListener(MouseEvent.CLICK, onMouseClick);
+		
 		#if flash
 		//addEventListener(Event.EXIT_FRAME, frameExit);
 		#end
@@ -60,14 +74,22 @@ class Input extends Sprite
 		touchPositions.remove(e.touchPointID);
 	}
 	
-	static private function frameExit(e)
+	static private function onMouseMove(e:MouseEvent)
 	{
-		ClearPressedKeys();
+		mouseState.position.x = e.stageX / Game.scale;
+		mouseState.position.y = e.stageY / Game.scale;
+		mouseState.leftButton = e.buttonDown;
+	}
+	
+	static private function onMouseClick(e:MouseEvent)
+	{
+		mouseClicked = true;
 	}
 	
 	static public function ClearPressedKeys()
 	{
 		keysPressed = new Array<String>();
+		mouseClicked = false;
 	}
 	
 	static public function LastKeyPressed() : String
@@ -162,5 +184,15 @@ class Input extends Sprite
 			positions.push(p);
 		}
 		return positions;
+	}
+	
+	static public function GetMouseState() : MouseState
+	{
+		return mouseState;
+	}
+	
+	static public function WasMouseClicked() : Bool
+	{
+		return mouseClicked;
 	}
 }

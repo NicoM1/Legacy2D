@@ -60,7 +60,7 @@ class SpriteBatch
 		depthBuffer = new Array<Float>();
 	}
 	
-	public function PushCall(index : Int, imageID : Int, destinationRect : Rectangle, ?sourceRect : Rectangle, ?depth : Float, ?colorTransform : ColorTransform, ?horizontalFlip = false, ?verticalFlip = false )
+	private function PushCall(index : Int, imageID : Int, destinationRect : Rectangle, ?sourceRect : Rectangle, ?depth : Float, ?colorTransform : ColorTransform, ?horizontalFlip = false, ?verticalFlip = false )
 	{
 		IDBuffer.insert(index, imageID);
 		dXBuffer.insert(index, destinationRect.x);
@@ -270,10 +270,71 @@ class SpriteBatch
 	}
 	
 	///Draws directly to buffer, unfortunately does not allow depth
-	public function DrawToScreen(?image : Bitmap, destinationRect : Rectangle, ?sourceRect : Rectangle, ?colorTransform : ColorTransform, ?horizontalFlip = false, ?verticalFlip = false)
+	public function DrawToScreen(image : Bitmap, destinationRect : Rectangle, ?sourceRect : Rectangle, ?colorTransform : ColorTransform, ?horizontalFlip = false, ?verticalFlip = false)
 	{
 		var widthScale : Float;
 		var heightScale : Float;
+		
+		if (sourceRect == null)
+		{
+			matrix.identity();
+			widthScale= (destinationRect.width / image.width);
+			heightScale = (destinationRect.height / image.height);
+			if (horizontalFlip)
+			{
+				matrix.scale( -1, 1);
+				matrix.translate(image.width, 0);
+			}
+			if (verticalFlip)
+			{
+				matrix.scale(1, -1);
+				matrix.translate(0, image.height);
+			}
+			matrix.translate(destinationRect.x / widthScale, destinationRect.y / heightScale);
+			matrix.scale(widthScale, heightScale);
+			buffer.lock();
+			buffer.draw(image, matrix, colorTransform);
+			buffer.unlock();
+		}
+		else
+		{
+			var bmd = new BitmapData(Math.floor(sourceRect.width), Math.floor(sourceRect.height), true, 0x00FFFFFF);
+			matrix.identity();
+			matrix.translate( -sourceRect.x, -sourceRect.y);
+			if (horizontalFlip)
+			{
+				matrix.scale( -1, 1);
+				matrix.translate(sourceRect.width, 0);
+			}
+			if (verticalFlip)
+			{
+				matrix.scale(1, -1);
+				matrix.translate(0, sourceRect.height);
+			}
+			bmd.lock();
+			bmd.draw(image, matrix);
+			bmd.unlock();
+			
+			matrix.identity();
+			
+			widthScale = (destinationRect.width / bmd.width);
+			heightScale = (destinationRect.height / bmd.height);
+			matrix.translate(destinationRect.x / widthScale, destinationRect.y / heightScale);
+			matrix.scale(widthScale, heightScale);
+
+			buffer.lock();
+			buffer.draw(bmd, matrix, colorTransform);
+			buffer.unlock();
+		}
+	}
+	
+	///Handy drawing function, works exactly the same as DrawToScreen but lets you provide the buffer, works nicest with "using lib.SpriteBatch"
+	public static function DrawToBuffer(buffer : BitmapData, image : Bitmap, destinationRect : Rectangle, ?sourceRect : Rectangle, ?colorTransform : ColorTransform, ?horizontalFlip = false, ?verticalFlip = false)
+	{
+		var widthScale : Float;
+		var heightScale : Float;
+		
+		var matrix = new Matrix();
 		
 		if (sourceRect == null)
 		{

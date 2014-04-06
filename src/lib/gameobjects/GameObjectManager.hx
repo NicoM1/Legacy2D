@@ -1,15 +1,20 @@
-package lib;
+package lib.gameobjects;
+import flash.geom.Point;
+import lib.collision.CollisionManager;
 
 class GameObjectManager
 {
 	///Int corresponds to ID of gameobject, for faster access
 	static private var gameObjects : Map<Int, GameObject>;
 	
+	static public var collision : CollisionManager; //change back to private soon
+	
 	private function new(){} 
 
-	static function __init__()
+	static public function init(worldBounds : Point)
 	{
 		gameObjects = new Map<Int, GameObject>();
+		collision = new CollisionManager(worldBounds);
 	}
 	
 	static public function AddGameObject(gameObject : GameObject)
@@ -58,12 +63,26 @@ class GameObjectManager
 		return null;
 	}
 	
+	static public function CheckCollision(object : CollisionComponent) : Array<CollisionComponent>
+	{
+		return collision.CheckCollision(object);
+	}
+	
+	static public function UpdateObject(object : CollisionComponent)
+	{
+		collision.UpdateObject(object);
+	}
+	
 	static public function Update(elapsed : Float)
 	{
+		var gObjects = new Array<GameObject>();
 		for (g in gameObjects)
 		{
 			g.Update(elapsed);
+			gObjects.push(g);
 		}
+		
+		collision.Update(gObjects);
 	}
 	
 	static public function Draw(spritebatch : SpriteBatch)

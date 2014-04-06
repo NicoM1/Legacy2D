@@ -1,37 +1,57 @@
 package ;
 
-import flash.display.Bitmap;
 import flash.display.Stage;
 import flash.geom.Point;
-import flash.geom.Rectangle;
-import lib.Camera;
-import lib.GameObject;
-import openfl.Assets;
-import openfl.display.FPS;
-import lib.Game;
-import lib.SpriteBatch;
-import lib.Input;
 import flash.system.System;
-import lib.GameObjectManager;
+import lib.Camera;
+import lib.Game;
+import lib.gameobjects.CollisionComponent;
+import lib.gameobjects.DrawComponent;
+import lib.gameobjects.GameObject;
+import lib.gameobjects.GameObjectManager;
+import lib.gameobjects.InputComponent;
+import lib.gameobjects.MovementComponent;
+import lib.UserInput;
+import lib.SpriteBatch;
+import lib.map.TmxParser;
+import openfl.display.FPS;
+import openfl.Assets;
+import haxe.io.StringInput;
 
 class MainGame extends Game
 {
 	private var spriteBatch : SpriteBatch;	
-	private var keyboard : Input;	
+	private var keyboard : UserInput;	
 	private var fps : FPS;	
 	private var cam : Camera;
 	
+	private var level : Level;
+	
 	public function new(stage:Stage) 
 	{
-		super(stage.stageWidth, stage.stageHeight, 1); //Input Size And Scale Here, Note This Is Not Window Size, Mearly Buffer Size [super(640/2, 480/2, 2);]
+		super(stage.stageWidth/3, stage.stageHeight/3, 3, new Point(1024, 1024), true, 61, 0xFFFFFFFF); //UserInput Size And Scale Here, Note This Is Not Window Size, Mearly Buffer Size [super(640/2, 480/2, 2);]
 		
 		ArtInstance.Init(); //This Does All Your Art Loading, Load Files In Its LoadContent() Function
 		spriteBatch = new SpriteBatch(Game.drawBuffer); //Acts Similar To An XNA SpriteBatch, But Art Must Be Supplied As An Integer Identifier Name
-		keyboard = new Input(stage); //Handles KeyBoard Input, Must Have Stage Reference To Add Event Listeners
+		keyboard = new UserInput(stage); //Handles KeyBoard UserInput, Must Have Stage Reference To Add Event Listeners
 		fps = new FPS();
 		addChild(fps);
 		cam = new Camera();	
 		
+		BuildTestScene();
+	}
+	
+	private function BuildTestScene()
+	{
+		var player : GameObject = new GameObject(1, "player", new Point(10, 10), new Point(16, 33));
+		player.AddComponent(new InputComponent(player.ID));
+		player.AddComponent(new MovementComponent(player.ID));
+		player.AddComponent(new CollisionComponent(player.ID, false, true, 10));
+		player.AddComponent(new DrawComponent(player.ID, ArtInstance._PLAYER));
+		
+		GameObjectManager.AddGameObject(player);
+		
+		level = new Level();
 	}
 
 	///Handle Any Game State Updates Here
@@ -39,15 +59,19 @@ class MainGame extends Game
 	{
 		super.Update(); //Must Be Called To Update Elapsed Time, Get Elapsed Time With: Game.elapsed
 		
-		if (Input.IsKeyDown("escape"))
+		//trace(GameObjectManager.GetGameObjectByTag("player").GetComponent(MovementComponent).Velocity.x);
+		
+		#if !html5
+		if (UserInput.IsKeyDown("escape"))
 		{
 			System.exit(0);
 		}
+		#end
 		
 		//Add Update Code Here:
 		GameObjectManager.Update(Game.elapsed);
 		
-		Input.ClearPressedKeys(); //Clears Keypresses and touch locations
+		UserInput.ClearPressedKeys(); //Clears Keypresses and touch locations
 	}
 	
 	///Handle All Draw Code Here
@@ -57,7 +81,11 @@ class MainGame extends Game
 		
 		//Add Draw Code Here:
 		GameObjectManager.Draw(spriteBatch);	
-		
+
 		spriteBatch.PushDrawCalls(); //Pushes All Draw Calls To The Buffer, MUST BE CALLED (if using crappy Draw() call)
+		
+		#if flash
+		super.DrawLight();
+		#end
 	}
 }
