@@ -28,7 +28,6 @@
 	<android minimum-sdk-version="15"/>
 	<android target-sdk-version="19"/>
 	
-	
 	<!-- optimize output
 	<haxeflag name="-dce full" /> -->
 	
