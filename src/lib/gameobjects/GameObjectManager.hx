@@ -75,15 +75,10 @@ class GameObjectManager
 	
 	static public function Update(elapsed : Float)
 	{
+		var gObjects = new Array<GameObject>();
 		for (g in gameObjects)
 		{
 			g.Update(elapsed);
-		}
-		
-		var gObjects = new Array<GameObject>();
-		
-		for (g in gameObjects)
-		{
 			gObjects.push(g);
 		}
 		

@@ -27,15 +27,8 @@ class MovementComponent extends Component
 	{
 		super.Update(elapsed);
 		
-		if (Velocity.x != 0 || Velocity.y != 0)
-		{
-			GetOwner().Position.x += Velocity.x * elapsed; 
-			GetOwner().Position.y += Velocity.y * elapsed;
-		}
-		
 		ApplyDrag(elapsed);
 
-		
 		if (ExtraMath.Positive(Velocity.x) > MaxVelocity.x)
 		{
 			Velocity.x = ExtraMath.Sign(Velocity.x) * MaxVelocity.x;
@@ -43,6 +36,12 @@ class MovementComponent extends Component
 		if (ExtraMath.Positive(Velocity.y) > MaxVelocity.y)
 		{
 			Velocity.y = ExtraMath.Sign(Velocity.y) * MaxVelocity.y;
+		}
+
+		if (Velocity.x != 0 || Velocity.y != 0)
+		{
+			GetOwner().Position.x += Velocity.x * elapsed; 
+			GetOwner().Position.y += Velocity.y * elapsed;
 		}
 	}
 	

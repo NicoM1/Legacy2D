@@ -7,6 +7,10 @@ import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.Point;
 import flash.Lib;
+import flash.text.TextField;
+import flash.text.TextFormat;
+import flash.text.TextFieldAutoSize;
+import haxe.Log;
 import lib.gameobjects.GameObjectManager;
 
 using lib.SpriteBatch;
@@ -31,13 +35,16 @@ class Game extends Sprite
 	static private var lightBuffer:BitmapData;
 	static private var drawLightBuffer:Bitmap;
 	static private var lights:Array<Light>;
+
+	static private var traceBox : TextField;
+	static private var traceText : String;
 	
 	static function get_elapsed()
 	{
 		return (Game.fixedUpdate)? frameRate : _elapsed;
 	}
 		
-	public function new (width:Float, height:Float, scale:Float, worldBounds : Point, ?fixedUpdate : Bool = false, ?updateFrameRate = 60, ?ambientLight:Int = 0xFFFFFFFF) 
+	public function new (width:Float, height:Float, scale:Float, worldBounds : Point, ?fixedUpdate : Bool = false, ?updateFrameRate = 60, ?ambientLight:Int = 0xFFFFFFFF)
 	{		
 		super ();
 		
@@ -51,6 +58,9 @@ class Game extends Sprite
 		InitListeners();
 		
 		GameObjectManager.init(worldBounds);
+		
+		CreateTracer();
+		
 	}	
 	
 	private function CreateBuffer(width:Float, height:Float, scale:Float)
@@ -63,6 +73,25 @@ class Game extends Sprite
 		drawBuffer = new Bitmap(buffer);
 		drawBuffer.scaleX = drawBuffer.scaleY = scale;
 		addChild(drawBuffer);
+	}
+	
+	public function Trace( v : Dynamic, ?inf : haxe.PosInfos )
+	{
+		traceText += "\n";
+		if (inf != null)
+		{
+			traceText += Std.string(inf.fileName + ":");
+			traceText += Std.string(inf.methodName);
+			traceText += Std.string("(" + inf.lineNumber + "):");
+		}
+		traceText += Std.string(v);
+		traceBox.text = traceText;
+		if (traceBox.textHeight > Game.localheight * scale)
+		{
+			var index = traceText.indexOf("\n") + 1;
+			traceText = traceText.substring(index);
+			traceBox.text = traceText;
+		}
 	}
 	
 	private function BuildLights(ambient : Int)
@@ -157,5 +186,15 @@ class Game extends Sprite
 		lightBuffer.lock();
 		lightBuffer.fillRect(lightBuffer.rect, ambientLight);
 		lightBuffer.unlock();
+	}
+	
+	function CreateTracer():Void 
+	{
+		traceBox = new TextField();
+		traceBox.defaultTextFormat = new TextFormat ("_sans", 12, 0x00000000);
+		traceBox.autoSize = TextFieldAutoSize.LEFT;
+		traceBox.multiline = true;
+		addChild(traceBox);
+		Log.trace = Trace;
 	}
 }

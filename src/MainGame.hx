@@ -29,7 +29,7 @@ class MainGame extends Game
 	
 	public function new(stage:Stage) 
 	{
-		super(stage.stageWidth, stage.stageHeight, 1, new Point(1024, 1024), true, 61, 0xFFFFFFFF); //UserInput Size And Scale Here, Note This Is Not Window Size, Mearly Buffer Size [super(640/2, 480/2, 2);]
+		super(stage.stageWidth/3, stage.stageHeight/3, 3, new Point(1024, 1024), true, 61, 0xFFFFFFFF); //UserInput Size And Scale Here, Note This Is Not Window Size, Mearly Buffer Size [super(640/2, 480/2, 2);]
 		
 		ArtInstance.Init(); //This Does All Your Art Loading, Load Files In Its LoadContent() Function
 		spriteBatch = new SpriteBatch(Game.drawBuffer); //Acts Similar To An XNA SpriteBatch, But Art Must Be Supplied As An Integer Identifier Name
@@ -44,9 +44,9 @@ class MainGame extends Game
 	private function BuildTestScene()
 	{
 		var player : GameObject = new GameObject(1, "player", new Point(10, 10), new Point(16, 33));
-		player.AddComponent(new CollisionComponent(player.ID, false, true, 10));
-		player.AddComponent(new MovementComponent(player.ID));
 		player.AddComponent(new InputComponent(player.ID));
+		player.AddComponent(new MovementComponent(player.ID));
+		player.AddComponent(new CollisionComponent(player.ID, false, true, 10));
 		player.AddComponent(new DrawComponent(player.ID, ArtInstance._PLAYER));
 		
 		GameObjectManager.AddGameObject(player);
@@ -59,7 +59,7 @@ class MainGame extends Game
 	{
 		super.Update(); //Must Be Called To Update Elapsed Time, Get Elapsed Time With: Game.elapsed
 		
-		var mouse = UserInput.GetMouseState();
+		//trace(GameObjectManager.GetGameObjectByTag("player").GetComponent(MovementComponent).Velocity.x);
 		
 		#if !html5
 		if (UserInput.IsKeyDown("escape"))
