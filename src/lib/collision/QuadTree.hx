@@ -16,7 +16,7 @@ class QuadTree
 	private var bounds : Rectangle;
 	private var nodes : Array<QuadTree>; //COUNTER-CLOCKWISE
 	
-	public function new(level : Int, bounds : Rectangle, ?maxObjects = 3, ?maxLevels = 10) 
+	public function new(level : Int, bounds : Rectangle, ?maxObjects = 50, ?maxLevels = 10) 
 	{
 		this.level = level;
 		this.bounds = bounds;
